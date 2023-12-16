@@ -12,6 +12,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.TextField;
 import controller.CurrencyCalculatorController;
 import javafx.scene.control.ChoiceBox;
+import dao.CurrencyDao;
 
 import java.sql.SQLException;
 
@@ -30,6 +31,7 @@ public class CurrencyCalculatorView extends Application{
     Label instructions = new Label("Enter amount to convert");
 
     Button calculate = new Button("Calculate");
+    Button newCurrency = new Button("Add new currency");
 
     Label from = new Label("Select currency to convert from");
 
@@ -50,22 +52,10 @@ public class CurrencyCalculatorView extends Application{
 
         stage.setMinWidth(600);
         stage.setMinHeight(600);
-        choiceBox.getItems().add("EUR");
-        choiceBox.getItems().add("USD");
-        choiceBox.getItems().add("GBP");
-        choiceBox.getItems().add("MAD");
-        choiceBox.getItems().add("JPY");
-        choiceBox.getItems().add("CNY");
-        choiceBox.getItems().add("INR");
-        choiceBox.getItems().add("RUB");
-        choiceBox2.getItems().add("EUR");
-        choiceBox2.getItems().add("USD");
-        choiceBox2.getItems().add("GBP");
-        choiceBox2.getItems().add("MAD");
-        choiceBox2.getItems().add("JPY");
-        choiceBox2.getItems().add("CNY");
-        choiceBox2.getItems().add("INR");
-        choiceBox2.getItems().add("RUB");
+        for (int i=1; i<=controller.getCurrenciesSize(); i++){
+            choiceBox.getItems().add(controller.getCurrencybyID(i).getAbbreviation());
+            choiceBox2.getItems().add(controller.getCurrencybyID(i).getAbbreviation());
+        }
         pane.setMargin(choiceBox, insets);
         pane.setMargin(choiceBox2, insets);
         pane.setMargin(calculate, insets);
@@ -76,6 +66,7 @@ public class CurrencyCalculatorView extends Application{
         pane.setMargin(instructions, insets);
         pane.setMargin(from, insets);
         pane.setMargin(to, insets);
+        pane.setMargin(newCurrency, insets);
         result.setMinWidth(300);
         result.setAlignment(Pos.CENTER);
         searchField.setMinWidth(300);
@@ -91,11 +82,74 @@ public class CurrencyCalculatorView extends Application{
         pane.getChildren().add(empty);
         pane.getChildren().add(to);
         pane.getChildren().add(choiceBox2);
+        pane.getChildren().add(newCurrency);
 
         Scene scene = new Scene(pane);
         scene.getStylesheets().add("application/sans.css");
         stage.setScene(scene);
         stage.show();
+
+        newCurrency.setOnAction(new EventHandler<ActionEvent>() {
+            Stage newStage = new Stage();
+            public void handle(ActionEvent event) {
+                FlowPane pane = new FlowPane();
+                newStage.setTitle("Add new currency");
+                newStage.setMinWidth(600);
+                newStage.setMinHeight(600);
+                TextField currencyName = new TextField();
+                TextField currencyAbbreviation = new TextField();
+                TextField currencyRate = new TextField();
+                Button addCurrency = new Button("Add currency");
+                Button close = new Button("Close");
+                Label name = new Label("Enter currency name");
+                Label abbreviation = new Label("Enter currency abbreviation");
+                Label rate = new Label("Enter currency rate");
+                Label empty = new Label("                                                                        ");
+                pane.setMargin(currencyName, insets);
+                pane.setMargin(currencyAbbreviation, insets);
+                pane.setMargin(currencyRate, insets);
+                pane.setMargin(addCurrency, insets);
+                pane.setMargin(close, insets);
+                pane.setMargin(name, insets);
+                pane.setMargin(abbreviation, insets);
+                pane.setMargin(rate, insets);
+                pane.setMargin(empty, insets);
+                pane.getChildren().add(name);
+                pane.getChildren().add(currencyName);
+                pane.getChildren().add(abbreviation);
+                pane.getChildren().add(currencyAbbreviation);
+                pane.getChildren().add(rate);
+                pane.getChildren().add(currencyRate);
+                pane.getChildren().add(empty);
+                pane.getChildren().add(addCurrency);
+                pane.getChildren().add(close);
+                Scene scene = new Scene(pane);
+                scene.getStylesheets().add("application/sans.css");
+                newStage.setScene(scene);
+                newStage.show();
+                addCurrency.setOnAction(new EventHandler<ActionEvent>() {
+                    public void handle(ActionEvent event) {
+                        String name = currencyName.getText();
+                        String abbreviation = currencyAbbreviation.getText();
+                        String rate = currencyRate.getText();
+                        try {
+                            controller.addCurrency(controller.makeCurrency(name, abbreviation, rate));
+                            choiceBox.getItems().add(abbreviation);
+                            choiceBox2.getItems().add(abbreviation);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+
+                        newStage.close();
+                    }
+                });
+                close.setOnAction(new EventHandler<ActionEvent>() {
+                    public void handle(ActionEvent event) {
+                        newStage.close();
+                    }
+                });
+            }
+        });
 
         calculate.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {

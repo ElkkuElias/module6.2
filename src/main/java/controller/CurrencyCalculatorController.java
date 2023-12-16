@@ -17,6 +17,12 @@ public class CurrencyCalculatorController {
         this.gui = gui;
         this.currencyDao = new CurrencyDao();
     }
+    public int getCurrenciesSize() {
+        return currencyDao.getNumberOfCurrencies();
+    }
+    public currencies getCurrencybyID(int id){
+        return currencyDao.getCurrencybyID(id);
+    }
 
     public void calculate()  {
         String amountStr = gui.getAmount();
@@ -50,11 +56,20 @@ public class CurrencyCalculatorController {
         }
 
     }
+    public currencies makeCurrency(String name, String abbreviation, String rate) {
+        currencies curreny = new currencies(name, abbreviation, Double.parseDouble(rate));
+        return curreny;
+    }
+    public void addCurrency(currencies currency) throws SQLException {
+        currencyDao.persist(currency);
+    }
 
     private double findCurrencyByAbbreviation(String abbreviation) throws SQLException {
         double result = currencyDao.find(abbreviation);
          return result;
     }
+
+
     public static void main(String[] args) {
         CurrencyCalculatorView.launch(CurrencyCalculatorView.class);
     }
