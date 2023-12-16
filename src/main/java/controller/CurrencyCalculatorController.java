@@ -17,12 +17,7 @@ public class CurrencyCalculatorController {
         this.gui = gui;
         this.currencyDao = new CurrencyDao();
     }
-    public int getCurrenciesSize() {
-        return currencyDao.getNumberOfCurrencies();
-    }
-    public currencies getCurrencybyID(int id){
-        return currencyDao.getCurrencybyID(id);
-    }
+
 
     public void calculate()  {
         String amountStr = gui.getAmount();
@@ -33,7 +28,7 @@ public class CurrencyCalculatorController {
             double amount = Double.parseDouble(amountStr);
 
             double fromCurrency = findCurrencyByAbbreviation(fromCurrencyAbbreviation);
-            if (fromCurrency < 0) {
+            if (fromCurrency == -0.999) {
                 gui.setResult("Database error");
                 return;
             }
@@ -60,9 +55,7 @@ public class CurrencyCalculatorController {
         currencies curreny = new currencies(name, abbreviation, Double.parseDouble(rate));
         return curreny;
     }
-    public void addCurrency(currencies currency) throws SQLException {
-        currencyDao.persist(currency);
-    }
+
 
     private double findCurrencyByAbbreviation(String abbreviation) throws SQLException {
         double result = currencyDao.find(abbreviation);

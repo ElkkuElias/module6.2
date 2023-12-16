@@ -1,17 +1,12 @@
 package entity;
-import jakarta.persistence.*;
 
-@Entity
-@Table(name="currencies")
 
 public class currencies {
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+
     private int id;
-    @Column(name="rate")
+
     public double rate;
 
-    @Column(name="name")
     public String name;
 
     public String abbreviation;
