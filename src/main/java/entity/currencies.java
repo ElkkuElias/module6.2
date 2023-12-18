@@ -13,7 +13,7 @@ public class currencies {
 
     @Column(name="name")
     public String name;
-
+    @Column(name="abbreviation")
     public String abbreviation;
 
     public currencies(String name, String abbreviation, double rate){

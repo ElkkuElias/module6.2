@@ -155,6 +155,7 @@ public class CurrencyCalculatorView extends Application{
             public void handle(ActionEvent event) {
                     controller.calculate();
 
+
             }
         });
         stage.show();

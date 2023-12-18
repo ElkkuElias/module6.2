@@ -25,6 +25,25 @@ public class CurrencyDao {
             throw new IllegalArgumentException("No currency found with the provided abbreviation");
         }
     }
+    public currencies findCurrency(String abbreviation) {
+        if (abbreviation == null || abbreviation.isEmpty()) {
+            throw new IllegalArgumentException("Abbreviation cannot be null or empty");
+        }
+
+        EntityManager em = datasource.MariaDBJPAConnection.getInstance();
+        if (em == null) {
+            throw new IllegalStateException("EntityManager is null");
+        }
+        TypedQuery<currencies> query = em.createQuery("SELECT c FROM currencies c WHERE c.abbreviation = :abbreviation", currencies.class);
+        query.setParameter("abbreviation", abbreviation);
+        currencies result = query.getSingleResult();
+
+        if (result != null) {
+            return result;
+        } else {
+            throw new IllegalArgumentException("No currency found with the provided abbreviation");
+        }
+    }
 public currencies getCurrencybyID(int id){
         EntityManager em = datasource.MariaDBJPAConnection.getInstance();
         if (em == null) {
